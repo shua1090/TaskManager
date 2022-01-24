@@ -34,3 +34,6 @@
 build
 cmake/
 cmake*/
+out*
+cmake-build*/
+.vs*
