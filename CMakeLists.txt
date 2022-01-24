@@ -4,7 +4,10 @@ project(task_manager)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_executable(task_manager task_manager/TaskManager.hpp task_manager/TaskManager.cpp 
-task_manager/main.cpp task_manager/Time.cpp task_manager/Time.h)
+add_executable(task_manager task_manager/TaskManager.hpp
+task_manager/main.cpp task_manager/Time.hpp)
 
-target_link_libraries(task_manager pthread)
+if (UNIX AND NOT APPLE)
+    message("On Linux, linking with pthread")
+    target_link_libraries(task_manager pthread)
+endif()

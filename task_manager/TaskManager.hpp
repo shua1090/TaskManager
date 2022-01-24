@@ -1,4 +1,4 @@
-#include "Time.h"
+#include "Time.hpp"
 
 #ifndef TASK_MANAGER
 #define TASK_MANAGER
@@ -53,11 +53,11 @@ public:
     }
 
 };
-
+namespace{
 class Compare
 {
 public:
-    bool compare(Task a, Task b){
+    inline bool compare(Task a, Task b){
         return a.time() > b.time();
     }
     bool operator() (Task A, Task B)
@@ -65,14 +65,20 @@ public:
         return compare(A, B);
     }
 };
+}
+
+long long getTime(){
+    return TimeObj::currentTimeObj().get_time();
+}
+
 
 class TaskManager {
-
     std::priority_queue<Task, std::vector<Task>, Compare > taskList;
     std::mutex mutex;
+    std::function<long long()> timeFunction;
 public:
     volatile bool flag;
-    TaskManager()= default;
+    TaskManager()=default;
 
     void addTask(Task task){
         this->mutex.lock();
@@ -84,7 +90,7 @@ public:
         this->mutex.lock();
         Task t; t = this->taskList.top();
         this->mutex.unlock();
-        auto curTime = TimeObj::currentTimeObj();
+        long long curTime = TimeObj::currentTimeObj().get_time();
         flag=true;
         while(flag){
             if (curTime > t.time()){
@@ -112,7 +118,7 @@ public:
 
             }
 
-            curTime = TimeObj::currentTimeObj();
+            curTime = TimeObj::currentTimeObj().get_time();
         }
     }
 };
