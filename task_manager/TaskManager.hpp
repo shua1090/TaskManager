@@ -57,10 +57,10 @@ namespace{
 class Compare
 {
 public:
-    inline bool compare(Task a, Task b){
+    static inline bool compare(const Task& a, const Task& b){
         return a.time() > b.time();
     }
-    bool operator() (Task A, Task B)
+    bool operator() (const Task& A, const Task& B)
     {
         return compare(A, B);
     }
@@ -77,10 +77,10 @@ class TaskManager {
     std::mutex mutex;
     std::function<long long()> timeFunction;
 public:
-    volatile bool flag;
+    volatile bool flag = false;
     TaskManager()=default;
 
-    void addTask(Task task){
+    void addTask(const Task& task){
         this->mutex.lock();
         this->taskList.push(task);
         this->mutex.unlock();
@@ -112,6 +112,7 @@ public:
                             break;
                         }
                         this->mutex.unlock();
+                        std::this_thread::sleep_for(std::chrono::milliseconds(50));
                     }
                 }
                 this->mutex.unlock();
